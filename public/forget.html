@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Восстановление</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        body { background: #080808; color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* Фон с эффектом движения */
+        .bg-layer { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background: url('bg.jpg') no-repeat center center/cover; z-index: -2; transition: transform 0.1s ease-out; will-change: transform; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(13, 13, 13, 0.4) 0%, #0d0d0d 100%); backdrop-filter: blur(10px); z-index: -1; }
+        
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 30px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
+        .logo { font-weight: 900; font-size: 13px; text-transform: uppercase; text-decoration: none; color: #fff; letter-spacing: 2px; }
+        
+        .header-btn { background: rgba(255,255,255,0.06); color: #fff; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; transition: .3s; }
+        .header-btn:hover { background: #fff; color: #000; }
+        
+        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; z-index: 5; }
+        .login-card { width: 400px; padding: 50px 40px; background: rgba(20, 20, 20, 0.4); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6); text-align: center; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .lang-switcher { margin-bottom: 25px; display: flex; justify-content: center; gap: 8px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: #555; padding: 6px 16px; border-radius: 100px; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: #fff; color: #000; border-color: #fff; }
+        
+        h1 { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; margin-bottom: 8px; }
+        .subtitle { color: #555; font-size: 13px; margin-bottom: 20px; font-weight: 600; line-height: 1.4; min-height: 36px; }
+        
+        #error-msg { color: #ff4b4b; font-size: 11px; margin-bottom: 15px; display: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        input { width: 100%; padding: 15px 20px; margin-bottom: 15px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: white; transition: 0.3s; font-size: 14px; }
+        input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.02); }
+        
+        .action-btn { width: 100%; padding: 16px; background: #fff; border: none; border-radius: 16px; color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(255, 255, 255, 0.15); }
+        .action-btn:disabled { background: #333; color: #555; cursor: not-allowed; transform: none; }
+
+        .back-link { display: inline-block; margin-top: 25px; color: #555; text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .back-link:hover { color: #3b82f6; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
+    </style>
+</head>
+<body>
+    <div class="bg-layer" id="bgLayer"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="header-wrapper">
+        <header>
+            <a href="index.html" class="logo">VORTEX</a>
+            <a href="register.html" class="header-btn" id="nav-reg">Регистрация</a>
+        </header>
+    </div>
+
+    <div class="main-content">
+        <div class="login-card" id="card">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <h1 id="title">Сброс</h1>
+            <p class="subtitle" id="subtitle">Введите почту для получения кода восстановления доступа</p>
+            
+            <div id="error-msg">Ошибка</div>
+
+            <input type="text" id="email" placeholder="Логин или Почта">
+            <button class="action-btn" id="action-btn" onclick="sendCode()">Выслать код</button>
+            
+            <a href="login.html" class="back-link" id="back-link">← Вернуться назад</a>
+        </div>
+    </div>
+
+    <script>
+        const bgLayer = document.getElementById('bgLayer');
+        document.addEventListener('mousemove', e => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            bgLayer.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+        });
+
+        const translations = {
+            ru: {
+                title: "Сброс",
+                sub: "Введите почту для получения кода восстановления доступа",
+                placeholder: "Логин или Почта",
+                btn: "Выслать код",
+                btnWait: "Отправка...",
+                back: "← Вернуться назад",
+                reg: "Регистрация",
+                errEmpty: "Введите данные!",
+                errChar: "Недопустимые символы!",
+                errServer: "Пользователь не найден",
+                success: "Код отправлен на почту!"
+            },
+            en: {
+                title: "Reset",
+                sub: "Enter your email to receive a recovery code",
+                placeholder: "Login or Email",
+                btn: "Send Code",
+                btnWait: "Sending...",
+                back: "← Go Back",
+                reg: "Register",
+                errEmpty: "Enter data!",
+                errChar: "Invalid characters!",
+                errServer: "User not found",
+                success: "Code sent to your email!"
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            document.getElementById('title').innerText = t.title;
+            document.getElementById('subtitle').innerText = t.sub;
+            document.getElementById('email').placeholder = t.placeholder;
+            document.getElementById('action-btn').innerText = t.btn;
+            document.getElementById('back-link').innerText = t.back;
+            document.getElementById('nav-reg').innerText = t.reg;
+
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-' + lang));
+        }
+
+        async function sendCode() {
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim();
+            const btn = document.getElementById('action-btn');
+            const errorDiv = document.getElementById('error-msg');
+            const t = translations[currentLang];
+
+            errorDiv.style.display = 'none';
+
+            if(!email) {
+                showError(t.errEmpty);
+                return;
+            }
+            
+            const safePattern = /^[a-zA-Z0-9_.@]+$/;
+            if(!safePattern.test(email)) {
+                showError(t.errChar);
+                return;
+            }
+
+            btn.innerText = t.btnWait;
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/forget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+
+                if (data.success) {
+                    // Сохраняем email для следующего шага
+                    sessionStorage.setItem('resetEmail', email);
+                    window.location.href = 'reset.html';
+                } else {
+                    showError(data.message || t.errServer);
+                    btn.innerText = t.btn;
+                    btn.disabled = false;
+                }
+
+            } catch (err) {
+                // Тестовый режим, если сервер не запущен
+                sessionStorage.setItem('resetEmail', email);
+                setTimeout(() => {
+                    window.location.href = 'reset.html';
+                }, 1000);
+            }
+        }
+
+        function showError(text) {
+            const errorDiv = document.getElementById('error-msg');
+            const card = document.getElementById('card');
+            errorDiv.innerText = text;
+            errorDiv.style.display = 'block';
+            
+            card.style.animation = 'none';
+            void card.offsetWidth;
+            card.style.animation = 'shake 0.4s ease-in-out';
+        }
+    </script>
+</body>
+</html>

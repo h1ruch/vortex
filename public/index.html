@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Эстетика доминирования</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Глобально ставим Montserrat для всего документа */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            outline: none; 
+            font-family: 'Montserrat', sans-serif; 
+        }
+        
+        html { scroll-behavior: smooth; }
+        body { background: #0d0d0d; color: #fff; overflow-x: hidden; letter-spacing: -0.2px; }
+        
+        .main-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: url('bg.jpg') no-repeat center center/cover fixed; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% -20%, rgba(13, 13, 13, 0.1) 0%, #0d0d0d 100%); backdrop-filter: blur(8px); z-index: -1; }
+
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.6s ease forwards; }
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        /* Стили для логотипа */
+        .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s ease; }
+        .logo-link:hover { transform: scale(1.03); }
+        .logo-img { height: 24px; width: auto; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
+        .logo-text { font-weight: 800; font-size: 14px; text-transform: uppercase; color: #fff; letter-spacing: 3px; }
+
+        nav { display: flex; gap: 2px; }
+        .nav-link { color: #777; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: .2s; padding: 10px 16px; border-radius: 100px; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: #fff; background: rgba(255,255,255,0.06); }
+
+        .dropdown { position: relative; }
+        .dropdown-list { position: absolute; top: 45px; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(18,18,18,0.98); border: 1px solid rgba(255,255,255,0.05); border-radius: 18px; padding: 8px; min-width: 180px; opacity: 0; visibility: hidden; transition: .3s; z-index: 1100; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .dropdown:hover .dropdown-list { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .dropdown-item { color: #777; text-decoration: none; font-size: 12px; font-weight: 500; display: block; padding: 10px 14px; border-radius: 10px; transition: .2s; }
+        .dropdown-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+        .btn-auth { background: #fff; color: #000; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; transition: .3s; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .hero h1 { 
+            font-size: 68px; 
+            font-weight: 800; 
+            margin-bottom: 25px; 
+            letter-spacing: -2px; 
+            line-height: 1.1; 
+            background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: #999; max-width: 600px; font-size: 18px; margin-bottom: 45px; line-height: 1.6; font-weight: 500; }
+        
+        .hero-btns { display: flex; gap: 15px; }
+        .btn-primary { background: #3b82f6; color: #fff; padding: 18px 40px; border-radius: 18px; font-weight: 700; text-decoration: none; transition: 0.3s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+        .btn-secondary { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 18px 40px; border-radius: 18px; font-weight: 700; text-decoration: none; transition: 0.3s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+
+        .showcase-detailed { max-width: 1200px; margin: 0 auto 100px; padding: 0 20px; text-align: left; }
+        .showcase-header { text-align: center; margin-bottom: 60px; }
+        .sup-title { color: #3b82f6; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; }
+        .showcase-header h2 { font-size: 42px; font-weight: 800; margin: 15px 0; letter-spacing: -1px; }
+        
+        .showcase-main { display: flex; align-items: center; gap: 60px; background: rgba(20,20,20,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 60px; border-radius: 40px; backdrop-filter: blur(15px); }
+        .showcase-info { flex: 1; }
+        .highlight-text { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 30px; letter-spacing: -0.5px; }
+        
+        .quote-box { margin-bottom: 40px; border-left: 3px solid #3b82f6; padding-left: 20px; }
+        .quote-box p { color: #888; font-style: italic; margin-bottom: 15px; font-size: 15px; font-weight: 500; }
+
+        .cheat-window { width: 380px; background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; box-shadow: 0 50px 100px rgba(0,0,0,0.6); }
+        .window-head { padding: 15px 20px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .win-logo { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #3b82f6; letter-spacing: 1px; }
+        .window-content { padding: 25px; }
+        
+        .toggle { width: 32px; height: 18px; background: #222; border-radius: 100px; position: relative; cursor: pointer; transition: 0.3s; }
+        .toggle.active { background: #3b82f6; }
+        .toggle-circle { width: 12px; height: 12px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px; transition: 0.3s; }
+        .toggle.active .toggle-circle { left: 17px; }
+
+        .pill { background: #1a1a1a; padding: 6px 14px; border-radius: 8px; font-size: 11px; color: #666; cursor: pointer; border: 1px solid transparent; transition: 0.2s; font-weight: 700; }
+        .pill.active { background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; color: #fff; }
+        
+        .dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .dot.active { border-color: white; transform: scale(1.2); }
+
+        .features { padding: 60px 20px; max-width: 1200px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .card { 
+            background: rgba(15, 15, 15, 0.4); border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px 30px; border-radius: 40px; transition: 0.4s; backdrop-filter: blur(15px);
+            position: relative; text-align: center;
+        }
+        .card:hover { transform: translateY(-10px); border-color: #3b82f6; background: rgba(20, 20, 20, 0.8); }
+        
+        .card-category { font-size: 10px; color: #3b82f6; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; display: block; }
+        .card h3 { font-size: 26px; font-weight: 800; margin-bottom: 40px; letter-spacing: -0.5px; }
+        
+        .feature-item { margin-bottom: 25px; }
+        .feature-name { font-size: 14px; font-weight: 600; color: #fff; display: block; margin-bottom: 4px; }
+        .feature-sub { font-size: 11px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 1px; }
+
+        footer { padding: 80px 20px; text-align: center; color: #444; font-size: 12px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="main-background"></div>
+<div class="bg-overlay"></div>
+
+<div class="header-wrapper">
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="logo.svg" alt="Vortex Logo" class="logo-img">
+            <span class="logo-text">VORTEX</span>
+        </a>
+        <nav>
+            <a href="index.html" class="nav-link active">Главная</a>
+            <a href="services.html" class="nav-link">Купить</a>
+            <div class="dropdown">
+                <div class="nav-link">Документы</div>
+                <div class="dropdown-list">
+                    <a href="tos.html" class="dropdown-item">Соглашение (ToS)</a>
+                    <a href="privacy.html" class="dropdown-item">Приватность</a>
+                </div>
+            </div>
+            <a href="support.html" class="nav-link">Помощь</a>
+        </nav>
+        <button id="authBtn" class="btn-auth" onclick="handleAuth()">Войти</button>
+    </header>
+</div>
+
+<section class="hero">
+    <h1>Vortex — путь к доминированию</h1>
+    <p>Профессиональный инструмент с безупречной репутацией и уникальным функционалом, созданный для тех, кто ценит качество.</p>
+    <div class="hero-btns">
+        <a href="services.html" class="btn-primary">Купить продукт ↗</a>
+        <a href="#features" class="btn-secondary">Подробнее</a>
+    </div>
+</section>
+
+<section class="showcase-detailed">
+    <div class="showcase-header">
+        <span class="sup-title">ПОЧЕМУ VORTEX?</span>
+        <h2>Только лучшие функции.</h2>
+    </div>
+
+    <div class="showcase-main">
+        <div class="showcase-info">
+            <h3 class="highlight-text">Лучшая киллаура на рынке.<br>Настолько хороша, что вы прослезитесь.</h3>
+            <div class="quote-box">
+                <p>«Это что-то невероятное, что-то новое в мире заезженных читов на Minecraft...»</p>
+                <div class="quote-author"><strong>Twister</strong><br><span style="font-size:12px;color:#555;font-weight:700">Minecraft Ютубер и Медиа</span></div>
+            </div>
+            <div style="display:flex;gap:15px">
+                <a href="services.html" class="btn-primary" style="border-radius:12px;padding:14px 28px; text-decoration: none;">Купить продукт ↗</a>
+                <a href="#" class="nav-link" style="border:1px solid rgba(255,255,255,0.1);padding:14px 28px;border-radius:12px">Обзор Twister</a>
+            </div>
+        </div>
+
+        <div class="cheat-window">
+            <div class="window-head"><span class="win-logo">vortex</span></div>
+            <div class="window-content">
+                <div style="margin-bottom:20px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <span style="font-weight:700; font-size: 14px;">⚔️ Killaura</span>
+                        <div id="ka-toggle" class="toggle active" onclick="this.classList.toggle('active')"><div class="toggle-circle"></div></div>
+                    </div>
+                    <div style="font-size:13px; font-weight: 600;">Настройка вращения</div>
+                    <div style="font-size:11px;color:#555;margin-bottom:12px; font-weight: 500;">Оптимизированные алгоритмы обхода</div>
+                    <div style="display:flex;gap:8px">
+                        <div class="pill" onclick="setPill(this)">None</div>
+                        <div class="pill active" onclick="setPill(this)">Open Group</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:13px;margin-bottom:10px; font-weight: 600;">Цвет интерфейса</div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <div class="dot" style="background:#facc15" onclick="selectColor(this, '#FACC15')"></div>
+                        <div class="dot active" style="background:#3b82f6" onclick="selectColor(this, '#3B82F6')"></div>
+                        <div class="dot" style="background:#ef4444" onclick="selectColor(this, '#EF4444')"></div>
+                        <div id="hex-val" style="margin-left:auto;font-size:10px;color:#444;font-family:monospace">#3B82F6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="features">
+    <div class="grid">
+        <div class="card">
+            <span class="card-category">Combat</span>
+            <h3>Сражения</h3>
+            <div class="feature-item"><span class="feature-name">KillAura</span><span class="feature-sub">Adaptive Logic</span></div>
+            <div class="feature-item"><span class="feature-name">Velocity</span><span class="feature-sub">Full Control</span></div>
+            <div class="feature-item"><span class="feature-name">Reach</span><span class="feature-sub">Extended Range</span></div>
+        </div>
+        <div class="card">
+            <span class="card-category">Visuals</span>
+            <h3>Визуализация</h3>
+            <div class="feature-item"><span class="feature-name">Premium ESP</span><span class="feature-sub">Skeleton</span></div>
+            <div class="feature-item"><span class="feature-name">Tracers</span><span class="feature-sub">Fluid Lines</span></div>
+            <div class="feature-item"><span class="feature-name">Wallhack</span><span class="feature-sub">X-Ray</span></div>
+        </div>
+        <div class="card">
+            <span class="card-category">Security</span>
+            <h3>Безопасность</h3>
+            <div class="feature-item"><span class="feature-name">Advanced Bypass</span><span class="feature-sub">Kernel</span></div>
+            <div class="feature-item"><span class="feature-name">Self-Destruct</span><span class="feature-sub">Ghost</span></div>
+            <div class="feature-item"><span class="feature-name">HWID Spoofer</span><span class="feature-sub">Native</span></div>
+        </div>
+    </div>
+</section>
+
+<footer>&copy; 2026 VORTEX PROJECT. ВСЕ ПРАВА ЗАЩИЩЕНЫ.</footer>
+
+<script>
+    function checkAuth() {
+        const authBtn = document.getElementById('authBtn');
+        const isLoggedIn = localStorage.getItem('vortex_logged_in');
+
+        if (isLoggedIn === 'true') {
+            authBtn.innerText = 'Профиль'; 
+            authBtn.style.background = 'rgba(255,255,255,0.08)';
+            authBtn.style.color = '#fff';
+            authBtn.style.border = '1px solid rgba(255,255,255,0.1)';
+        } else {
+            authBtn.innerText = 'Войти';
+            authBtn.style.background = '#fff';
+            authBtn.style.color = '#000';
+            authBtn.style.border = 'none';
+        }
+    }
+
+    function handleAuth() {
+        const isLoggedIn = localStorage.getItem('vortex_logged_in');
+        if (isLoggedIn === 'true') {
+            window.location.href = 'account.html';
+        } else {
+            window.location.href = 'login.html';
+        }
+    }
+
+    window.onload = checkAuth;
+
+    function setPill(el) {
+        el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+    }
+    function selectColor(el, hex) {
+        el.parentElement.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('hex-val').innerText = hex;
+    }
+</script>
+
+</body>
+</html>

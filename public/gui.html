@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --accent: #3b82f6;
+            --border: rgba(255, 255, 255, 0.05);
+            --text-dim: #666;
+        }
+
+        body { 
+            background: #111; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- ГЛАВНОЕ ОКНО --- */
+        .window {
+            width: 750px;
+            height: 500px;
+            background: var(--bg);
+            border-radius: 12px;
+            display: flex;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 0 1px var(--border);
+            overflow: hidden;
+        }
+
+        /* Тонкая полоска сверху для акцента */
+        .window::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        /* --- БОКОВАЯ ПАНЕЛЬ --- */
+        .sidebar {
+            width: 70px;
+            background: rgba(0,0,0,0.2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 25px;
+        }
+
+        .side-item {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-dim);
+            transition: 0.3s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .side-item:hover, .side-item.active {
+            color: var(--accent);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .side-item svg { width: 20px; height: 20px; stroke-width: 2.5; }
+
+        /* --- КОНТЕНТ --- */
+        .main-container {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #222; border: 1px solid var(--accent); }
+        .username { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- СЕТКА ФУНКЦИЙ --- */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .groupbox {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .groupbox-title {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            display: block;
+        }
+
+        /* --- ЭЛЕМЕНТЫ УПРАВЛЕНИЯ (UI) --- */
+        .control-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .label { font-size: 12px; color: #ccc; font-weight: 600; }
+
+        /* Чекбокс а-ля Doomsday */
+        .checkbox {
+            width: 16px; height: 16px;
+            background: #151515;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+        .checkbox.checked { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+
+        /* Слайдер */
+        .slider-bg { width: 100px; height: 4px; background: #1a1a1a; border-radius: 2px; position: relative; }
+        .slider-fill { width: 60%; height: 100%; background: var(--accent); border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <aside class="sidebar">
+            <div class="side-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            </div>
+            <div class="side-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+            <div class="side-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </div>
+        </aside>
+
+        <main class="main-container">
+            <header>
+                <div class="username">Vortex <span style="color: var(--text-dim); font-weight: 400;">v1.0.2</span></div>
+                <div class="user-info">
+                    <span class="username">User_Alpha</span>
+                    <div class="avatar"></div>
+                </div>
+            </header>
+
+            <div class="grid">
+                <div class="groupbox">
+                    <span class="groupbox-title">Main Assistance</span>
+                    
+                    <div class="control-row">
+                        <span class="label">Enable Aimbot</span>
+                        <div class="checkbox checked"></div>
+                    </div>
+
+                    <div class="control-row">
+                        <span class="label">Field of View</span>
+                        <div class="slider-bg"><div class="slider-fill"></div></div>
+                    </div>
+
+                    <div class="control-row">
+                        <span class="label">Smooth Factor</span>
+                        <div class="slider-bg"><div class="slider-fill" style="width: 30%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="groupbox">
+                    <span class="groupbox-title">Visual Overlays</span>
+                    
+                    <div class="control-row">
+                        <span class="label">Player Boxes</span>
+                        <div class="checkbox checked"></div>
+                    </div>
+
+                    <div class="control-row">
+                        <span class="label">Health Bar</span>
+                        <div class="checkbox"></div>
+                    </div>
+
+                    <div class="control-row">
+                        <span class="label">Snaplines</span>
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

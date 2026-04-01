@@ -1,0 +1,94 @@
+/* 1. ШАПКА-КАПСУЛА (КАК НА СКРИНШОТЕ) */
+.header-wrapper {
+    position: fixed;
+    top: 20px; left: 0; width: 100%;
+    display: flex; justify-content: center;
+    z-index: 10000;
+}
+
+header {
+    background: #0d0d0d; /* Глубокий черный как на скрине */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    padding: 6px 8px 6px 25px; /* Отступы для идеальной центровки */
+    gap: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* ЛОГОТИП */
+.logo { 
+    font-weight: 900; font-size: 15px; text-transform: uppercase; 
+    text-decoration: none; color: white; letter-spacing: 0.5px;
+}
+.logo span { color: #3b82f6; margin-left: 4px; }
+
+/* НАВИГАЦИЯ (Иконка слева от текста) */
+nav { display: flex; gap: 25px; align-items: center; }
+
+.nav-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; /* Расстояние между иконкой и текстом */
+    color: #ccc; 
+    text-decoration: none; 
+    font-size: 13px; 
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+/* МАЛЕНЬКИЕ ТОНКИЕ ИКОНКИ */
+.nav-link svg { 
+    width: 15px !important; 
+    height: 15px !important; 
+    stroke-width: 1.5; /* Тонкая линия */
+    color: #fff;
+    opacity: 0.8;
+}
+
+.nav-link:hover { color: #fff; opacity: 1; }
+
+/* КНОПКА "ВОЙТИ" (ОВАЛЬНАЯ ВНУТРИ ШАПКИ) */
+.btn-auth-header { 
+    background: #111; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: #fff; padding: 10px 25px; 
+    border-radius: 100px; font-size: 14px; 
+    font-weight: 800; text-decoration: none; 
+    transition: 0.3s;
+}
+.btn-auth-header:hover { background: #fff; color: #000; }
+
+/* --- ТВОИ СТИЛИ ИЗ main.css (БЕЗ ИЗМЕНЕНИЙ) --- */
+
+body {
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpFrhSbwQQ8JggEiV6UNWRkxohcZkw_egAJQ&s') no-repeat center center fixed;
+    background-size: cover;
+    color: white; font-family: 'Segoe UI', sans-serif;
+    margin: 0; height: 100vh; display: flex; flex-direction: column; position: relative;
+}
+
+body::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); z-index: -1;
+}
+
+.login-card {
+    width: 380px; text-align: center; padding: 40px;
+    background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    margin: auto; /* Центровка карты */
+}
+
+input, input[type="password"] {
+    width: 100%; padding: 12px; margin-bottom: 15px;
+    background-color: #1e1e1e; border: 1px solid #333;
+    border-radius: 8px; color: white; outline: none; transition: 0.3s;
+}
+
+.form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 14px; }
+.remember-me { display: flex; align-items: center; cursor: pointer; color: #aaa; }
+.remember-me input[type="checkbox"] { width: auto; margin: 0 10px 0 0; cursor: pointer; }

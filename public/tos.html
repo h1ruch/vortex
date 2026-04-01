@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Соглашение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        
+        body {
+            background: #080808; 
+            color: white;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* --- ФИКСИРОВАННЫЙ ФОН (НЕ УХОДИТ ПРИ СКРОЛЛЕ) --- */
+        .vortex-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            background: url('bg.jpg') no-repeat center center/cover;
+            will-change: transform;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Плотный градиент для читаемости текста */
+            background: radial-gradient(circle at 50% 30%, rgba(10, 10, 10, 0.3) 0%, #080808 85%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        /* --- ШАПКА --- */
+        .header-wrapper { 
+            width: 100%; display: flex; justify-content: center; 
+            padding: 25px 0; position: fixed; top: 0; z-index: 1000;
+        }
+        
+        header { 
+            background: rgba(20, 20, 20, 0.7); 
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 100px; 
+            display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .logo-text { font-weight: 900; font-size: 13px; text-transform: uppercase; color: #fff; letter-spacing: 2.5px; text-decoration: none; }
+        .btn-back { background: #fff; color: #000; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
+        .btn-back:hover { opacity: 0.85; transform: scale(0.97); }
+
+        /* --- КОНТЕНТ --- */
+        .container { 
+            max-width: 850px; 
+            margin: 150px auto 80px; 
+            padding: 0 20px; 
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { font-size: 48px; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px; text-align: center; text-transform: uppercase; }
+        .last-update { color: #3b82f6; font-size: 12px; font-weight: 800; text-transform: uppercase; text-align: center; margin-bottom: 70px; display: block; letter-spacing: 3px; }
+
+        section { 
+            margin-bottom: 35px; 
+            background: rgba(255, 255, 255, 0.02); 
+            padding: 45px; 
+            border-radius: 35px; 
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: 0.3s ease;
+        }
+        section:hover { 
+            background: rgba(255, 255, 255, 0.04); 
+            border-color: rgba(59, 130, 246, 0.2); 
+        }
+        
+        h2 { font-size: 22px; font-weight: 900; margin-bottom: 20px; color: #fff; display: flex; align-items: center; gap: 15px; }
+        h2 span { color: #3b82f6; font-size: 16px; font-weight: 900; }
+        
+        p { color: #999; font-size: 16px; font-weight: 500; margin-bottom: 20px; }
+
+        .tos-list { list-style: none; }
+        .tos-list li { color: #ccc; font-size: 15px; margin-bottom: 12px; display: flex; gap: 12px; line-height: 1.6; }
+        .tos-list li::before { content: "—"; color: #3b82f6; font-weight: 900; }
+
+        footer { text-align: center; padding: 60px 0 100px; color: #444; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="vortex-background">
+        <div class="bg-image" id="parallaxBg"></div>
+        <div class="bg-overlay"></div>
+    </div>
+
+    <div class="header-wrapper">
+        <header>
+            <a href="index.html" class="logo-text">VORTEX</a>
+            <a href="index.html" class="btn-back">На главную</a>
+        </header>
+    </div>
+
+    <div class="container">
+        <h1>Terms of Service</h1>
+        <span class="last-update">Обновлено: 29 Марта 2026</span>
+
+        <section>
+            <h2><span>01</span> Использование ПО</h2>
+            <p>Vortex предоставляет программные решения для модификации игрового опыта. Используя наш софт, вы принимаете на себя полную ответственность за любые последствия, включая возможные ограничения со стороны игровых издателей.</p>
+        </section>
+
+        <section>
+            <h2><span>02</span> Правила аккаунта</h2>
+            <ul class="tos-list">
+                <li>Запрещена передача данных аккаунта третьим лицам.</li>
+                <li>Одна подписка действительна только для одного уникального пользователя.</li>
+                <li>Попытка взлома или анализа кода клиента ведет к аннуляции лицензии.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><span>03</span> Возврат средств</h2>
+            <p>Цифровые товары Vortex не подлежат возврату после активации лицензионного ключа, так как продукт считается использованным. Техническая поддержка поможет решить любые проблемы с запуском.</p>
+        </section>
+
+        <footer>
+            &copy; 2026 Vortex Project. Все права защищены.
+        </footer>
+    </div>
+
+    <script>
+        // Движение только картинки, оверлей остается статичным
+        const parallaxBg = document.getElementById('parallaxBg');
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 60;
+            const y = (window.innerHeight / 2 - e.clientY) / 60;
+            parallaxBg.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    </script>
+</body>
+</html>

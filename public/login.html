@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Авторизация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        body { background: #080808; color: white; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* Динамический фон */
+        .bg-layer { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background: url('bg.jpg') no-repeat center center/cover; z-index: -2; transition: transform 0.1s ease-out; will-change: transform; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(13, 13, 13, 0.4) 0%, #0d0d0d 100%); backdrop-filter: blur(10px); z-index: -1; }
+        
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.6s ease forwards; }
+        
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s ease; }
+        .logo-text { font-weight: 800; font-size: 13px; text-transform: uppercase; color: #fff; letter-spacing: 2.5px; }
+        
+        nav { display: flex; gap: 5px; }
+        .nav-link { color: #777; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 100px; transition: .2s; }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        
+        .btn-reg-header { background: #fff; color: #000; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; transition: .3s; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; z-index: 5; }
+        .login-card { width: 400px; padding: 50px; background: rgba(20, 20, 20, 0.4); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6); text-align: center; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .lang-selector { margin-bottom: 30px; display: flex; justify-content: center; gap: 8px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: #555; padding: 6px 16px; border-radius: 100px; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: #fff; color: #000; border-color: #fff; }
+        
+        h2 { margin-bottom: 30px; font-size: 32px; font-weight: 900; letter-spacing: -1.5px; text-transform: uppercase; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 16px 20px; margin-bottom: 15px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: white; transition: 0.3s; font-size: 14px; }
+        input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 30px; font-size: 13px; color: #666; font-weight: 600; }
+        
+        .btn-login { width: 100%; padding: 18px; background: #fff; border: none; border-radius: 16px; color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 1.5px; }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        
+        #error-msg { color: #ff4b4b; font-size: 11px; margin-bottom: 20px; display: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-link { margin-top: 30px; font-size: 13px; color: #555; font-weight: 600; }
+        .footer-link a { color: #3b82f6; text-decoration: none; font-weight: 800; margin-left: 5px; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" id="bgLayer"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="header-wrapper">
+        <header>
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">VORTEX</span>
+            </a>
+            <nav>
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="services.html" class="nav-link">Купить</a>
+                <a href="support.html" class="nav-link">Помощь</a>
+            </nav>
+            <a href="register.html" class="btn-reg-header">Регистрация</a>
+        </header>
+    </div>
+
+    <div class="main-content">
+        <div class="login-card" id="loginCard">
+            <div class="lang-selector">
+                <button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</button>
+                <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+            </div>
+            
+            <h2 id="title-text">Вход</h2>
+            <div id="error-msg">Заполните поля</div>
+            
+            <form id="loginForm">
+                <input type="text" id="userInput" placeholder="Логин" required>
+                <input type="password" id="passInput" placeholder="Пароль" required>
+                
+                <div class="form-options">
+                    <label style="display:flex; align-items:center; cursor:pointer;">
+                        <input type="checkbox" id="rememberMe" style="width:16px; margin-right:10px; accent-color: #3b82f6;"> 
+                        <span id="remember-text">Запомнить</span>
+                    </label>
+                    <a href="forget.html" id="forgot-text" style="color:#3b82f6; text-decoration:none; font-weight: 800;">Забыли?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-text">Войти в систему</button>
+
+                <div class="footer-link">
+                    <span id="no-acc-text">Нет аккаунта?</span> <a href="register.html" id="create-text">Создать</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const bgLayer = document.getElementById('bgLayer');
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('error-msg');
+        const loginCard = document.getElementById('loginCard');
+
+        // Параллакс эффект
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            bgLayer.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+        });
+
+        const translations = {
+            ru: { title: "Вход", user: "Логин", pass: "Пароль", remember: "Запомнить", forgot: "Забыли?", btn: "Войти в систему", noacc: "Нет аккаунта?", create: "Создать", err_fill: "Заполните поля", err_auth: "Неверный логин или пароль", err_conn: "Ошибка соединения" },
+            en: { title: "Login", user: "Username", pass: "Password", remember: "Remember me", forgot: "Forgot?", btn: "Sign In", noacc: "No account?", create: "Sign Up", err_fill: "Fill in the fields", err_auth: "Invalid credentials", err_conn: "Connection error" }
+        };
+
+        let currentLang = 'ru';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            document.getElementById('title-text').innerText = t.title;
+            document.getElementById('userInput').placeholder = t.user;
+            document.getElementById('passInput').placeholder = t.pass;
+            document.getElementById('remember-text').innerText = t.remember;
+            document.getElementById('forgot-text').innerText = t.forgot;
+            document.getElementById('btn-text').innerText = t.btn;
+            document.getElementById('no-acc-text').innerText = t.noacc;
+            document.getElementById('create-text').innerText = t.create;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-' + lang));
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            
+            const username = document.getElementById('userInput').value.trim();
+            const password = document.getElementById('passInput').value;
+
+            if (!username || !password) {
+                showError(translations[currentLang].err_fill);
+                return;
+            }
+
+            // Маскировка Base64 для сервера
+            const maskedPassword = btoa(password);
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Vortex-Auth': 'Session-Protected'
+                    },
+                    body: JSON.stringify({ username, password: maskedPassword })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Сохраняем данные пользователя для account.html
+                    localStorage.setItem('vortex_user', JSON.stringify(data.user));
+                    localStorage.setItem('vortex_logged_in', 'true');
+                    
+                    // Если стоит галочка "Запомнить", можно добавить логику долгой сессии
+                    if (document.getElementById('rememberMe').checked) {
+                        localStorage.setItem('vortex_remember', 'true');
+                    }
+
+                    window.location.href = 'account.html';
+                } else {
+                    showError(data.message || translations[currentLang].err_auth);
+                }
+            } catch (err) {
+                showError(translations[currentLang].err_conn);
+            }
+        });
+
+        function showError(text) {
+            errorMsg.innerText = text;
+            errorMsg.style.display = 'block';
+            loginCard.style.animation = 'none';
+            void loginCard.offsetWidth; 
+            loginCard.style.animation = 'shake 0.4s ease-in-out';
+        }
+    </script>
+</body>
+</html>

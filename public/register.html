@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Регистрация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        body { background: #080808; color: white; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .bg-layer { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background: url('bg.jpg') no-repeat center center/cover; z-index: -2; transition: transform 0.1s ease-out; will-change: transform; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(13, 13, 13, 0.4) 0%, #0d0d0d 100%); backdrop-filter: blur(10px); z-index: -1; }
+        
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 30px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
+        
+        .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s ease; }
+        .logo-text { font-weight: 800; font-size: 13px; text-transform: uppercase; color: #fff; letter-spacing: 2.5px; }
+        
+        nav { display: flex; gap: 5px; }
+        .nav-link { color: #777; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 100px; transition: .2s; display: flex; align-items: center; gap: 8px; }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .nav-link svg { width: 14px; height: 14px; stroke-width: 2.5; fill: none; stroke: currentColor; }
+        
+        .btn-auth-header { background: #fff; color: #000; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; transition: .3s; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; z-index: 5; }
+        .login-card { width: 400px; padding: 45px; background: rgba(20, 20, 20, 0.4); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6); text-align: center; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .lang-selector { margin-bottom: 25px; display: flex; justify-content: center; gap: 8px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: #555; padding: 6px 16px; border-radius: 100px; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: #fff; color: #000; border-color: #fff; }
+        
+        h2 { margin-bottom: 25px; font-size: 28px; font-weight: 900; letter-spacing: -1.5px; text-transform: uppercase; }
+        input { width: 100%; padding: 15px 20px; margin-bottom: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: white; transition: 0.3s; font-size: 14px; font-weight: 500; }
+        input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        
+        .btn-reg { width: 100%; padding: 18px; background: #fff; border: none; border-radius: 16px; color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 1.5px; margin-top: 10px; }
+        .btn-reg:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        
+        #error-msg { color: #ff4b4b; font-size: 11px; margin-bottom: 15px; display: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-link { margin-top: 25px; font-size: 13px; color: #555; font-weight: 600; }
+        .footer-link a { color: #3b82f6; text-decoration: none; font-weight: 800; margin-left: 5px; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" id="bgLayer"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="header-wrapper">
+        <header>
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">VORTEX</span>
+            </a>
+            <nav>
+                <a href="index.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> <span>Главная</span>
+                </a>
+                <a href="services.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span>Купить</span>
+                </a>
+            </nav>
+            <a href="login.html" class="btn-auth-header">Войти</a>
+        </header>
+    </div>
+
+    <div class="main-content">
+        <div class="login-card" id="regCard">
+            <div class="lang-selector">
+                <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+            </div>
+            
+            <h2 id="title-text">Регистрация</h2>
+            <div id="error-msg">Ошибка</div>
+            
+            <form id="regForm">
+                <input type="text" id="userInput" placeholder="Логин" maxlength="12" required>
+                <input type="email" id="emailInput" placeholder="Почта" required>
+                <input type="password" id="passInput" placeholder="Пароль" required>
+                <input type="password" id="confirmInput" placeholder="Повтор пароля" required>
+                
+                <button type="submit" class="btn-reg" id="btn-text">Создать аккаунт</button>
+
+                <div class="footer-link">
+                    <span id="has-acc-text">Уже есть аккаунт?</span> <a href="login.html" id="login-link">Войти</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            ru: { 
+                title: "Регистрация", btn: "Создать аккаунт", userPl: "Логин", emailPl: "Почта", passPl: "Пароль", confPl: "Повтор пароля", 
+                hasAcc: "Уже есть аккаунт?", login: "Войти", navHome: "Главная", navBuy: "Купить",
+                errPass: "Пароли не совпадают", errShort: "Данные слишком короткие", errServer: "Логин или почта заняты",
+                errConn: "Нет связи с сервером", errSymbols: "Только буквы, цифры и _", errLong: "Ник до 12 символов"
+            },
+            en: { 
+                title: "Registration", btn: "Create Account", userPl: "Username", emailPl: "Email", passPl: "Password", confPl: "Confirm Password", 
+                hasAcc: "Have an account?", login: "Login", navHome: "Home", navBuy: "Buy",
+                errPass: "Passwords do not match", errShort: "Data is too short", errServer: "Login/Email taken",
+                errConn: "Server error", errSymbols: "Only letters, numbers and _", errLong: "Max 12 characters"
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            document.getElementById('title-text').innerText = t.title;
+            document.getElementById('btn-text').innerText = t.btn;
+            document.getElementById('userInput').placeholder = t.userPl;
+            document.getElementById('emailInput').placeholder = t.emailPl;
+            document.getElementById('passInput').placeholder = t.passPl;
+            document.getElementById('confirmInput').placeholder = t.confPl;
+            document.getElementById('has-acc-text').innerText = t.hasAcc;
+            document.getElementById('login-link').innerText = t.login;
+            
+            document.querySelectorAll('.lang-btn').forEach((b, i) => {
+                b.classList.toggle('active', (i === 0 && lang === 'ru') || (i === 1 && lang === 'en'));
+            });
+        }
+
+        // Параллакс
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.getElementById('bgLayer').style.transform = `translate(-${x * 30}px, -${y * 30}px)`;
+        });
+
+        const regCard = document.getElementById('regCard');
+        const errorMsg = document.getElementById('error-msg');
+
+        function showError(text) {
+            errorMsg.innerText = text;
+            errorMsg.style.display = "block";
+            regCard.style.animation = 'none';
+            void regCard.offsetWidth; 
+            regCard.style.animation = 'shake 0.4s ease-in-out';
+        }
+
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.display = "none";
+
+            const username = document.getElementById('userInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passInput').value;
+            const confirm = document.getElementById('confirmInput').value;
+
+            if(username.length < 3) return showError(translations[currentLang].errShort);
+            if(!/^[a-zA-Z0-9_]+$/.test(username)) return showError(translations[currentLang].errSymbols);
+            if(password.length < 4) return showError(translations[currentLang].errShort);
+            if(password !== confirm) return showError(translations[currentLang].errPass);
+
+            // Кодируем для сервера
+            const maskedPassword = btoa(password);
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password: maskedPassword })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // При успешной регистрации сбрасываем старые данные входа
+                    localStorage.removeItem('vortex_logged_in');
+                    window.location.href = 'login.html';
+                } else {
+                    showError(data.message || translations[currentLang].errServer);
+                }
+            } catch (err) {
+                showError(translations[currentLang].errConn);
+            }
+        });
+    </script>
+</body>
+</html>

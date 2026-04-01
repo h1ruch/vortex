@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Аккаунт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Проверка входа на уровне фронтенда
+        if (localStorage.getItem('vortex_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        body { background: #0d0d0d; color: #fff; overflow-x: hidden; min-height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; letter-spacing: -0.2px; }
+        
+        .container { opacity: 0; animation: fadeIn 0.5s ease forwards; width: 100%; max-width: 850px; padding: 0 20px; position: relative; z-index: 1; margin-top: 80px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+
+        .main-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: url('bg.jpg') no-repeat center center/cover fixed; opacity: 0.3; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.05) 0%, #0d0d0d 100%); backdrop-filter: blur(15px); z-index: -1; }
+        
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.6s ease forwards; }
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s ease; }
+        .logo-img { height: 24px; width: auto; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
+        .logo-text { font-weight: 800; font-size: 14px; text-transform: uppercase; color: #fff; letter-spacing: 3px; }
+
+        nav { display: flex; gap: 2px; }
+        .nav-link { color: #777; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 100px; transition: 0.2s; }
+        .nav-link:hover, .nav-link.active { color: #fff; background: rgba(255,255,255,0.06); }
+        
+        .header-actions { display: flex; align-items: center; gap: 8px; margin-left: 10px; }
+        .btn-change { background: rgba(255, 255, 255, 0.03); color: #888; padding: 10px 18px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn-logout { background: #ff4b4b; color: #fff; padding: 10px 22px; border-radius: 100px; font-size: 11px; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+
+        h1 { font-size: 42px; font-weight: 900; letter-spacing: -2px; margin-bottom: 5px; }
+        .user-hero { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+        .avatar { width: 70px; height: 70px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .info-card { background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 25px; backdrop-filter: blur(10px); }
+        .card-label { font-size: 11px; font-weight: 900; color: #3b82f6; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 1px; }
+        
+        .data-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .d-name { color: #555; font-size: 13px; font-weight: 600; }
+        .d-value { color: #eee; font-size: 13px; font-weight: 700; }
+        
+        .actions-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .action-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 16px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; text-decoration: none; transition: 0.3s; text-align: center; text-transform: uppercase; border: none; }
+        .action-btn:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .action-btn.primary { background: #3b82f6; border: none; }
+        .action-btn.primary:hover { background: #2563eb; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        
+        #vortex_file_input { display: none; }
+    </style>
+</head>
+<body>
+<div class="main-background"></div>
+<div class="bg-overlay"></div>
+
+<div class="header-wrapper">
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="logo.svg" alt="Vortex Logo" class="logo-img">
+            <span class="logo-text">VORTEX</span>
+        </a>
+        <nav>
+            <a href="index.html" class="nav-link">Главная</a>
+            <a href="services.html" class="nav-link">Покупка</a>
+            <a href="account.html" class="nav-link active">Аккаунт</a>
+        </nav>
+        <div class="header-actions">
+            <button class="btn-change" onclick="changeAccount()">Сменить</button>
+            <button class="btn-logout" onclick="logout()">Выйти</button>
+        </div>
+    </header>
+</div>
+
+<div class="container">
+    <div class="page-title-box" style="margin-bottom:30px">
+        <h1>Аккаунт</h1>
+        <p style="color:#555; font-size:12px; text-transform:uppercase; font-weight:700; letter-spacing: 2px;">Личный кабинет управления</p>
+    </div>
+
+    <div class="user-hero">
+        <div class="avatar">
+            <svg viewBox="0 0 24 24" style="width:28px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="u-text">
+            <h2 id="user-nickname" style="font-weight: 800; font-size: 24px;">Загрузка...</h2>
+            <p id="user-email" style="color: #555; font-weight: 600; font-size: 14px;">загрузка почты...</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <span class="card-label">Подписка</span>
+            <div class="data-item"><span class="d-name">Статус</span><span id="sub-status" class="d-value" style="color:#ff4b4b">Нет подписки</span></div>
+            <div class="data-item"><span class="d-name">Зарегистрирован</span><span id="reg-date-val" class="d-value">--.--.----</span></div>
+        </div>
+        <div class="info-card">
+            <span class="card-label">Данные</span>
+            <div class="data-item"><span class="d-name">UID</span><span id="user-uid" class="d-value" style="color:#3b82f6">-----</span></div>
+            <div class="data-item"><span class="d-name">Роль</span><span class="d-value">Пользователь</span></div>
+        </div>
+    </div>
+
+    <div class="actions-wrap">
+        <input type="file" id="vortex_file_input" accept=".jar,.png,.jpg,.jpeg,.zip" onchange="uploadFile()">
+        <button class="action-btn primary" onclick="document.getElementById('vortex_file_input').click()">Загрузить JAR/Файл</button>
+        
+        <button class="action-btn" onclick="activateKey()">Активировать ключ</button>
+        <button class="action-btn" onclick="Swal.fire({title:'2FA', text:'Скоро в VORTEX', icon:'info', background:'#0d0d0d', color:'#fff'})">Включить 2FA</button>
+    </div>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="/files/kotlin-stdlib-jdk8-1.3.72.jar" style="color: #3b82f6; font-size: 11px; text-decoration: none; font-weight: 700; opacity: 0.5;" download>СКАЧАТЬ БИБЛИОТЕКИ СИСТЕМЫ</a>
+    </div>
+</div>
+
+<script>
+    function changeAccount() {
+        window.location.href = 'login.html';
+    }
+
+    async function logout() {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+        } catch(e) {}
+        
+        localStorage.removeItem('vortex_logged_in');
+        localStorage.removeItem('vortex_user');
+        
+        Swal.fire({
+            title: 'ВЫХОД',
+            text: 'Сессия завершена',
+            icon: 'info',
+            background: '#0d0d0d', color: '#fff',
+            showConfirmButton: false, timer: 1500
+        }).then(() => { window.location.href = 'index.html'; });
+    }
+
+    async function uploadFile() {
+        const fileInput = document.getElementById('vortex_file_input');
+        if (!fileInput.files[0]) return;
+
+        const formData = new FormData();
+        formData.append('vortex_file', fileInput.files[0]);
+
+        Swal.fire({
+            title: 'Загрузка...',
+            text: 'Файл обрабатывается системой Vortex',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    title: 'Успех!',
+                    text: `Файл ${data.fileName} успешно прошел проверку и загружен.`,
+                    icon: 'success',
+                    background: '#0d0d0d', color: '#fff'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Ошибка защиты',
+                    text: data.message,
+                    icon: 'error',
+                    background: '#0d0d0d', color: '#fff'
+                });
+            }
+        } catch (err) {
+            Swal.fire('Ошибка', 'Сервер не отвечает', 'error');
+        }
+    }
+
+    function activateKey() {
+        Swal.fire({
+            title: 'АКТИВАЦИЯ',
+            input: 'text',
+            inputPlaceholder: 'Введите ваш ключ...',
+            background: '#0d0d0d', color: '#fff',
+            confirmButtonText: 'Активировать',
+            confirmButtonColor: '#3b82f6'
+        });
+    }
+
+    window.onload = function() {
+        const rawData = localStorage.getItem('vortex_user');
+        if (rawData) {
+            const userData = JSON.parse(rawData);
+            document.getElementById('user-nickname').innerText = userData.username || 'User';
+            document.getElementById('user-email').innerText = userData.email || 'No email';
+            document.getElementById('reg-date-val').innerText = userData.reg_date || '--.--.----';
+            document.getElementById('user-uid').innerText = userData.uid || '00000';
+            
+            if (userData.sub_days > 0) {
+                const sub = document.getElementById('sub-status');
+                sub.innerText = `Активна (${userData.sub_days} дн.)`;
+                sub.style.color = '#10b981';
+            }
+            document.title = `Vortex | ${userData.username}`;
+        }
+    }
+</script>
+</body>
+</html>

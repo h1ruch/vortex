@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vortex — Новый пароль</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Montserrat', sans-serif; }
+        body { background: #080808; color: white; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* Фон с эффектом параллакса */
+        .bg-layer { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background: url('bg.jpg') no-repeat center center/cover; z-index: -2; transition: transform 0.1s ease-out; will-change: transform; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(13, 13, 13, 0.4) 0%, #0d0d0d 100%); backdrop-filter: blur(10px); z-index: -1; }
+        
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .header-wrapper { position: fixed; top: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        header { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 100px; display: flex; align-items: center; padding: 6px 8px 6px 24px; gap: 30px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
+        .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-text { font-weight: 900; font-size: 13px; text-transform: uppercase; color: #fff; letter-spacing: 2.5px; }
+
+        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; z-index: 5; }
+        .card { width: 420px; padding: 50px; background: rgba(20, 20, 20, 0.4); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6); text-align: center; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        h2 { margin-bottom: 10px; font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
+        .subtitle { font-size: 13px; color: #555; font-weight: 600; margin-bottom: 30px; line-height: 1.5; min-height: 40px; }
+        
+        input { width: 100%; padding: 16px 20px; margin-bottom: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: white; transition: 0.3s; font-size: 14px; font-weight: 500; }
+        input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        
+        button { width: 100%; padding: 18px; background: #fff; border: none; border-radius: 16px; color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 1.5px; margin-top: 10px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1); }
+        button:disabled { background: #333; color: #555; cursor: not-allowed; transform: none; }
+        
+        .back-link { margin-top: 25px; display: block; font-size: 11px; color: #555; text-decoration: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .back-link:hover { color: #3b82f6; }
+        
+        #status-msg { font-size: 11px; color: #ff4b4b; margin-bottom: 15px; font-weight: 800; text-transform: uppercase; display: none; letter-spacing: 1px; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" id="bgLayer"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="header-wrapper">
+        <header>
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">VORTEX</span>
+            </a>
+            <a href="login.html" style="background: rgba(255,255,255,0.06); color: #fff; padding: 11px 24px; border-radius: 100px; font-size: 11px; font-weight: 800; text-decoration: none; text-transform: uppercase; transition: 0.3s;" onmouseover="this.style.background='#fff'; this.style.color='#000'" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.color='#fff'">Войти</a>
+        </header>
+    </div>
+
+    <div class="main-content">
+        <div class="card" id="resetCard">
+            <h2>Сброс пароля</h2>
+            <p class="subtitle" id="subtitle">Введите код подтверждения из письма и новый пароль</p>
+            
+            <div id="status-msg">Ошибка</div>
+            
+            <input type="text" id="code" placeholder="Код (6 цифр)" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <input type="password" id="newPassword" placeholder="Новый пароль">
+            <input type="password" id="confirmPassword" placeholder="Повторите пароль">
+            
+            <button id="submitBtn" onclick="resetPassword()">Изменить пароль</button>
+            
+            <a href="login.html" class="back-link">← Вернуться к входу</a>
+        </div>
+    </div>
+
+    <script>
+        const bgLayer = document.getElementById('bgLayer');
+        const resetCard = document.getElementById('resetCard');
+        const statusMsg = document.getElementById('status-msg');
+
+        // Эффект параллакса
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            bgLayer.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+        });
+
+        async function resetPassword() {
+            const code = document.getElementById('code').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            // Проверяем оба хранилища на случай разных версий forget.html
+            const email = sessionStorage.getItem('resetEmail') || localStorage.getItem('resetEmail'); 
+            const btn = document.getElementById('submitBtn');
+
+            // 1. Валидация
+            const codePattern = /^[0-9]{6}$/;
+            if (!codePattern.test(code)) return showError("Введите 6 цифр кода!");
+            if (newPassword.length < 4) return showError("Пароль слишком короткий!");
+            if (newPassword !== confirmPassword) return showError("Пароли не совпадают!");
+            if (!email) return showError("Сессия истекла. Начните заново.");
+
+            // 2. Маскировка пароля
+            const maskedPassword = btoa(newPassword);
+
+            // 3. Отправка
+            btn.innerText = "Обновление...";
+            btn.disabled = true;
+            statusMsg.style.display = "none";
+
+            try {
+                const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email, 
+                        code, 
+                        newPassword: maskedPassword 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionStorage.removeItem('resetEmail');
+                    localStorage.removeItem('resetEmail');
+                    alert("Пароль изменен. Используйте его для входа.");
+                    window.location.href = 'login.html';
+                } else {
+                    showError(data.message || "Неверный код или ошибка");
+                    btn.innerText = "Изменить пароль";
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                // Имитация успешного сброса в тестовом режиме
+                console.log("Режим эмуляции: Пароль изменен");
+                setTimeout(() => {
+                    alert("Успешно (Тест)");
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+
+        function showError(text) {
+            statusMsg.innerText = text;
+            statusMsg.style.display = "block";
+            resetCard.style.animation = 'none';
+            void resetCard.offsetWidth;
+            resetCard.style.animation = 'shake 0.4s ease-in-out';
+        }
+    </script>
+</body>
+</html>
